@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import Sidebar from "../components/Sidebar.vue"
 import Navbar from "./Navbar.vue";
 
@@ -13,6 +13,22 @@ const sidebarOpened = ref(true)
 function toggleSidebar(){
     console.log('click');
     sidebarOpened.value = !sidebarOpened.value
+}
+onMounted(() => {
+    handleSidebarOpened()
+    window.addEventListener('resize', handleSidebarOpened)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', handleSidebarOpened)
+})
+
+function handleSidebarOpened(){
+    if(window.outerWidth <= 768){
+        sidebarOpened.value = false
+    }else{
+        sidebarOpened.value = true
+    }
 }
 </script>
 
