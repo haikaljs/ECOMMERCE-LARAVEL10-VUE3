@@ -45,11 +45,13 @@
         <div>
           <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Request Password Reset</button>
         </div>
-      </form>
 
-      <p class="mt-5 text-sm text-gray-500">
+        <p class="mt-5 text-sm text-gray-500">
         <router-link :to="{name: 'login'}" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Remember your password?</router-link>
       </p>
+      </form>
+
+    
     </div>
   </div>
 </template>
