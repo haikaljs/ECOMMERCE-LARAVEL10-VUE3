@@ -1,5 +1,6 @@
 <script setup>
 import Sidebar from "../components/Sidebar.vue"
+import Navbar from "./Navbar.vue";
 
 const {title} = defineProps({
   title: String
@@ -8,14 +9,14 @@ const {title} = defineProps({
 </script>
 
 <template>
-    <div class="min-h-full flex">
+    <div class="min-h-full flex bg-gray-200">
         <!-- sidebar -->
-        <Sidebar/>
+        <Sidebar />
         <div class="flex-1">
-            <header class="h-8 shadow bg-white">Header</header>
+            <Navbar/>
 
             <!-- content -->
-            <main>
+            <main class="p-6">
             <router-view></router-view>
             </main>
 
