@@ -1,6 +1,14 @@
+<script setup>
+import { Bars3Icon,ArrowRightStartOnRectangleIcon, UserIcon } from "@heroicons/vue/24/outline"
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import { ChevronDownIcon } from '@heroicons/vue/20/solid'
+
+const emit = defineEmits(['toggle-sidebar'])
+</script>
+
 <template>
     <header class="flex justify-between items-center h-18 shadow bg-white py-2">
-       <button class="p-3 hover:bg-gray-200">
+       <button @click="emit('toggle-sidebar')" class="p-3 hover:bg-gray-200 transition-colors">
           <Bars3Icon class="w-6"/>
        </button>
        <div class="px-4">
@@ -48,10 +56,5 @@
           </Menu>
        </div>
     </header>
- </template>
+</template>
  
- <script setup>
- import { Bars3Icon,ArrowRightStartOnRectangleIcon, UserIcon } from "@heroicons/vue/24/outline"
- import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
- import { ChevronDownIcon } from '@heroicons/vue/20/solid'
- </script>
