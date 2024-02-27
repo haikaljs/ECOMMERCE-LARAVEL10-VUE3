@@ -16,7 +16,10 @@ const {title} = defineProps({
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
 
-      <slot></slot>
+      <router-view></router-view>
+
+  
+
       
     </div>
   </div>
