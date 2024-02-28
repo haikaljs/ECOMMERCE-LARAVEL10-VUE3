@@ -24,3 +24,14 @@ export function logout({commit}){
         return response
     })
 }
+
+export function getProducts({commit}){
+    commit('setProducts', [true])
+    return axiosClient.get('/product')
+    .then((response) => {
+        commit('setProducts', [false, response.data])
+    })
+    .catch(() => {
+        commit('setProducts', [false])
+    })
+}

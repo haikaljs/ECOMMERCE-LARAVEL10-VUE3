@@ -1,10 +1,25 @@
 <script setup>
+import { computed, onMounted, ref } from 'vue';
 import Spinner from '../components/core/Spinner.vue';
+import store from '../store';
+import {PRODUCTS_PER_PAGE} from '../constants.js'
 
+const perPage = ref(PRODUCTS_PER_PAGE)
+const search = ref('')
+const products = computed(() => store.state.products)
+
+onMounted(() => {
+  getProducts()
+})
+
+function getProducts(){
+  store.dispatch('getProducts')
+}
 
 </script>
 
 <template>
+  
 
   <div class="flex items-center justify-between mb-3">
     <h1 class="text-3xl font-semibold">Products</h1>
