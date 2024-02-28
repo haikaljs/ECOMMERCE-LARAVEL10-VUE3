@@ -4,7 +4,7 @@ export function getUser({commit}){
     return axiosClient.get('/user')
     .then(({data}) => {
         commit('setUser', data)
-        return response
+        return data
     })
 }
 
