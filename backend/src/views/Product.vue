@@ -13,7 +13,12 @@ onMounted(() => {
 })
 
 function getProducts(url = null){
-  store.dispatch('getProducts', {url})
+  store.dispatch('getProducts',
+   {
+    url,
+    search: search.value,
+    perPage: perPage.value
+  })
 }
 
 function getForPage(ev, link){
@@ -36,7 +41,7 @@ function getForPage(ev, link){
     <div class="flex justify-between border-b-2 pb-3">
       <div class="flex items-center">
         <span class="whitespace-nowrap mr-3">Per Page</span>
-        <select @change="getProdcuts(null)" v-model="perPage" class="appearance-none relative block w-24 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-sm">
+        <select @change="getProducts(null)" v-model="perPage" class="appearance-none relative block w-24 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-sm">
           <option value="5">5</option>
           <option value="10">10</option>
           <option value="20">20</option>
