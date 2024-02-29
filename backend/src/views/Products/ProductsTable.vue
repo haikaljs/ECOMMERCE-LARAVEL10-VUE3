@@ -5,7 +5,7 @@ import store from '../../store';
 import {PRODUCTS_PER_PAGE} from '../../constants.js'
 import TableHeaderCell from '../../components/core/Table/TableHeaderCell.vue';
 
-const perPage = ref(PRODUCTS_PER_PAGE)
+const perPage = ref(PRODUCTS_PER_PAGE)  
 const search = ref('')
 const products = computed(() => store.state.products)
 const sortField = ref('updated_at')
