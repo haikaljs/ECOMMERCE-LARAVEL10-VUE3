@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onUpdated } from 'vue'
 import {
   TransitionRoot,
   TransitionChild,
@@ -7,21 +7,75 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/vue'
-
+import Spinner from '../../components/core/Spinner.vue';
+import store from '../../store';
+import CustomInput from '../../components/core/CustomInput.vue';
 
 const props = defineProps({
-  modelValue: Boolean
+  modelValue: Boolean,
+  product: {
+    required: true,
+    type: Object
+  }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const product = ref({
+  id: props.product.id,
+  title: props.product.title,
+  image: props.product.image,
+  description: props.product.description,
+  price: props.product.price
+})
+
+const loading = ref(false)
+
+
+
+const emit = defineEmits(['update:modelValue', 'close'])
 
 const show = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value)
 })
 
+onUpdated(() => {
+  product.value = {
+    id: props.product.id,
+    title: props.product.title,
+    image: props.product.image,
+    description: props.product.description,
+    price: props.product.price
+  }
+})
+
 function closeModal() {
   show.value = false
+  emit('close')
+}
+
+function onSubmit(){
+  loading.value = true
+  if(product.value.id){
+    store.dispatch('updateProduct', product.value)
+    .then(response => {
+      loading.value = false
+      if(response.status === 200){
+        // todo show notification
+        store.dispatch('getProducts')
+        closeModal()
+      }
+    })
+  }else{
+    store.dispatch('createProduct', product.value)
+    .then(response => {
+      loading.value = false
+      if(response.status === 201){
+        // todo show notification
+        store.dispatch('getProducts')
+        closeModal()
+      }
+    })
+  }
 }
 
 </script>
@@ -39,7 +93,7 @@ function closeModal() {
         leave-from="opacity-100"
         leave-to="opacity-0"
       >
-        <div class="fixed inset-0 bg-black/25" />
+        <div class="fixed inset-0 bg-black/60" />
       </TransitionChild>
 
       <div class="fixed inset-0 overflow-y-auto">
@@ -56,30 +110,53 @@ function closeModal() {
             leave-to="opacity-0 scale-95"
           >
             <DialogPanel
-              class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              class="w-full max-w-md transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all"
             >
-              <DialogTitle
-                as="h3"
-                class="text-lg font-medium leading-6 text-gray-900"
-              >
-                Payment successful
+           <Spinner v-if="loading" class="absolute left-0 top-0 bg-white right-0 bottom-0 flex items-center justify-center"/>
+             
+            <header class="py-3 px-4 flex justify-between items-center">
+              <DialogTitle as="h3" class="text-lg leading-6 font-medium text-gray-900">
+                {{ product.id? `Update product: "${props.product.title}"` : 'Create new product' }}
               </DialogTitle>
-              <div class="mt-2">
-                <p class="text-sm text-gray-500">
-                  Your payment has been successfully submitted. We’ve sent you
-                  an email with all of the details of your order.
-                </p>
-              </div>
+              <button @click="closeModal">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
 
-              <div class="mt-4">
-                <button
-                  type="button"
-                  class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                  @click="closeModal"
-                >
-                  Got it, thanks!
-                </button>
+              </button>
+            </header>
+            <form @submit.prevent="onSubmit">
+              <div class="bg-white px-4 pt-5 pb-4">
+
+                <CustomInput class="mb-2" v-model="product.title" label="Product Title"/>
+
+                <CustomInput type="file" class="mb-2" v-model="product.title" label="Product Image" @change="file => product.image = file"/>
+
+                <CustomInput type="textarea" class="mb-2" v-model="product.description" label="Description" @change="file => product.image = file"/>
+
+                <CustomInput type="number" class="mb-2" v-model="product.price" label="Price" prepend="$"/>
+                
               </div>
+            </form>
+                <footer class="bg-gray-50 rounded-b-lg px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+        <button type="submit"
+                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
+                          text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500">
+          Save
+        </button>
+        <!-- <button type="button"
+                @click="onSubmit($event, true)"
+                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm
+                          text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500">
+          Save & Close
+        </button> -->
+        <router-link :to="{name: 'app.products'}"
+                     class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 text-base font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                     ref="cancelButtonRef">
+          Cancel
+        </router-link>
+      </footer>
+
             </DialogPanel>
           </TransitionChild>
         </div>
